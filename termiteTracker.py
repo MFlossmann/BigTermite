@@ -99,6 +99,11 @@ class termiteTracker:
         assert self.start_time is not None, (
             "Please start the recording before recording actions!")
 
+        # check if the previous action is the same
+        if self.actions[-1][0] == action:
+            print("I'm already {}-ing!".format(action))
+            return
+
         # calculate the time that the action occured
         # (down to 100ths of a second)
         t = self.get_time()
@@ -112,14 +117,8 @@ class termiteTracker:
 
         self.actions.append([action, t, 0])
 
-        print("Actions lst:")
-        print(self.actions)
-
-
     def get_export_lst(self, delimiter="\t"):
         msg_lst = [delimiter.join(["#Aktion", "StartZeit", "Dauer"])]
-
-        print(self.actions)
 
         for act in self.actions:
             print(act)
