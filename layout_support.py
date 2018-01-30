@@ -22,9 +22,12 @@ from tkinter import filedialog
 from termiteTracker import *
 
 def set_Tk_var():
-    global export_checker
+    global export_checker, decimal_comma, timer_display
     export_checker = BooleanVar()
+    decimal_comma = BooleanVar()
+    timer_display = StringVar()
     export_checker.set(True)
+    decimal_comma.set(True)
 
 def lambd(narf):
     """General function called when clicking anywhere"""
@@ -44,7 +47,7 @@ def start_pause_tracker():
         w.StartButton.configure(text='''Pause''')
 
     elif tt.paused:
-        print("Restarting tracker")
+        print("Unpausing tracker")
         tt.start_or_pause()
         w.StartButton.configure(text='''Pause''')
 
@@ -55,6 +58,10 @@ def start_pause_tracker():
 
     # enable the stop button
     w.StopButton.configure(state='enabled')
+
+    # enable the timer
+    root.after(100, update_clock)
+
 
 def stop_tracker():
     global running
@@ -84,9 +91,12 @@ def export_data():
 
         return
 
-    print(tt.get_export_lst())
-    f.write(tt.get_export_lst())
+    export_str = tt.get_export_lst()
+    if (decimal_comma):
+        export_str = export_str.replace(".", ",")
+    f.write(export_str)
     f.close()
+
 
 def record_action(action, one_time_only = False):
     print('recording action {} at time {}'.format(action, tt.get_time()))
@@ -94,6 +104,22 @@ def record_action(action, one_time_only = False):
         tt.record_action(action, one_time_only)
 
     current_action = action
+
+def init_clock():
+    timer_display.set("00:00.00")
+
+def update_clock():
+    if tt.started:
+        t = tt.get_time()
+        minutes = int(t / 60)
+        seconds = int(t % 60)
+        frac = int(100*(t % 1))
+
+        timer_str = "{:02d}:{:02d}.{:2d}".format(minutes, seconds, frac)
+        timer_display.set(timer_str)
+
+        root.after(100, update_clock)
+
 
 def init(top, gui, *args, **kwargs):
     print('Initialized support')
@@ -105,6 +131,7 @@ def init(top, gui, *args, **kwargs):
     tt = termiteTracker()
     current_action = "Laufen"  # TODO: better not hardcode this
     running = False
+    init_clock()
 
 
 def destroy_window():

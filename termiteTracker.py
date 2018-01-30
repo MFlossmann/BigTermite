@@ -73,7 +73,10 @@ class termiteTracker:
         running = False
 
     def get_time(self):
-        return round(time.time() - self.start_time, 2)
+        if self.paused:
+            return round(self.start_of_paused_time - self.start_time, 2)
+        else:
+            return round(time.time() - self.start_time, 2)
 
     def record_action(self, action, one_time_only = False):
         """ Records an action and writes in in the actions list.
