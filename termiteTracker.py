@@ -128,6 +128,11 @@ class termiteTracker:
     def get_export_lst(self, delimiter="\t"):
         msg_lst = [delimiter.join(["#Aktion", "StartZeit", "Dauer"])]
 
+        # we need to update the duration of the last action
+        time_last_action = self.actions[self.idx_last_action][1]
+        self.actions[self.idx_last_action][2] = round(self.get_time -
+                                                      time_last_action, 2)
+
         for act in self.actions:
             print(act)
             msg_lst.append(delimiter.join([str(entry) for entry in act]))
