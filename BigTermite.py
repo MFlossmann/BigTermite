@@ -95,11 +95,26 @@ class Big_Termite:
         self.TimerDisplay.configure(text='''00:00:00.00''')
         self.TimerDisplay.configure(textvariable=layout_support.timer_display)
 
+        self.LastAction = Label(top)
+        self.LastAction.place(relx=0.25, rely=0.30, height=26, width=120)
+        self.LastAction.configure(font=("Courier", 14))
+        self.LastAction.configure(relief=RAISED)
+        self.LastAction.configure(text='''Laufen''')
+        self.LastAction.configure(textvariable=
+                                  layout_support.last_action_display)
+
         self.StartButton = ttk.Button(self.Frame1)
         self.StartButton.place(relx=0.74, rely=0.04, height=57, width=97)
-        self.StartButton.configure(command= lambda: layout_support.start_pause_tracker())
+        self.StartButton.configure(command=
+                                   lambda: layout_support.start_pause_tracker())
         self.StartButton.configure(takefocus="")
         self.StartButton.configure(text='''Start''')
+
+        self.ExportButton = ttk.Button(self.Frame1)
+        self.ExportButton.place(relx=0.90, rely=0.19, height=57, width=60)
+        self.ExportButton.configure(command=layout_support.export_data)
+        self.ExportButton.configure(takefocus="")
+        self.ExportButton.configure(text='''Export''')
 
         self.StopButton = ttk.Button(self.Frame1)
         self.StopButton.place(relx=0.74, rely=0.19, height=57, width=97)

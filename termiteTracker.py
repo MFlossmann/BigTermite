@@ -52,10 +52,15 @@ class termiteTracker:
             self.pause()
         # we should resume
         else:
+            self.unpause()
+
+    def unpause(self):
+        if self.paused:
             # we simply add the passed time to the start time
             elapsed_time = time.time() - self.start_of_paused_time
             self.start_time += elapsed_time
             self.start_of_paused_time = 0
+        self.paused = False
 
     def pause(self):
         if not self.paused:
@@ -103,7 +108,7 @@ class termiteTracker:
             "Please start the recording before recording actions!")
 
         # check if the previous action is the same
-        if self.actions[-1][0] == action:
+        if self.actions[self.idx_last_action][0] == action:
             print("I'm already {}-ing!".format(action))
             return
 

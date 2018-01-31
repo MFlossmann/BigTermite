@@ -22,12 +22,14 @@ from tkinter import filedialog
 from termiteTracker import *
 
 def set_Tk_var():
-    global export_checker, decimal_comma, timer_display
+    global export_checker, decimal_comma, timer_display, last_action_display
     export_checker = BooleanVar()
     decimal_comma = BooleanVar()
     timer_display = StringVar()
+    last_action_display = StringVar()
     export_checker.set(True)
     decimal_comma.set(True)
+    last_action_display.set("Laufen")
 
 def lambd(narf):
     """General function called when clicking anywhere"""
@@ -71,9 +73,6 @@ def stop_tracker():
     if not tt.started:
         return
 
-    # pause just to be sure
-    tt.pause()
-
     if export_checker.get():
         print("Exporting...")
         export_data()
@@ -85,6 +84,12 @@ def stop_tracker():
 
 
 def export_data():
+    # early return: nothing to export
+    if len(tt.actions) == 0:
+        return
+
+    tt.pause()
+
     f = filedialog.asksaveasfile(mode='w', defaultextension=".csv")
     if f is None: # asksaveasfile return `None` if dialog closed with "cancel"
         print("Export aborted.")
@@ -97,6 +102,8 @@ def export_data():
     f.write(export_str)
     f.close()
 
+    tt.unpause()
+
 
 def record_action(action, one_time_only = False):
     print('recording action {} at time {}'.format(action, tt.get_time()))
@@ -104,6 +111,7 @@ def record_action(action, one_time_only = False):
         tt.record_action(action, one_time_only)
 
     current_action = action
+    last_action_display.set(action)
 
 def init_clock():
     timer_display.set("00:00.00")
@@ -115,7 +123,7 @@ def update_clock():
         seconds = int(t % 60)
         frac = int(100*(t % 1))
 
-        timer_str = "{:02d}:{:02d}.{:2d}".format(minutes, seconds, frac)
+        timer_str = "{:02d}:{:02d}.{:02d}".format(minutes, seconds, frac)
         timer_display.set(timer_str)
 
         root.after(100, update_clock)
