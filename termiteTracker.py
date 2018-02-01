@@ -120,7 +120,8 @@ class termiteTracker:
         # add a duration to the previous action
         if not one_time_only:
             time_last_action = self.actions[self.idx_last_action][1]
-            self.actions[self.idx_last_action][2] = round(t - time_last_action, 2)
+            self.actions[self.idx_last_action][2] = round(t - time_last_action,
+                                                          2)
             self.idx_last_action = len(self.actions)
 
         self.actions.append([action, t, 0])
@@ -130,7 +131,7 @@ class termiteTracker:
 
         # we need to update the duration of the last action
         time_last_action = self.actions[self.idx_last_action][1]
-        self.actions[self.idx_last_action][2] = round(self.get_time -
+        self.actions[self.idx_last_action][2] = round(self.get_time() -
                                                       time_last_action, 2)
 
         for act in self.actions:
