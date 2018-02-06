@@ -19,7 +19,7 @@ import tkinter.ttk as ttk
 from tkinter import filedialog
 #    py3 = 1
 
-from termiteTracker import *
+from termiteTracker import termiteTracker
 
 def set_Tk_var():
     global export_checker, decimal_comma, timer_display, last_action_display
@@ -88,7 +88,11 @@ def export_data():
     if len(tt.actions) == 0:
         return
 
-    tt.pause()
+    if not tt.paused:
+        tt.pause()
+        already_paused = True
+    else:
+        already_paused = False
 
     f = filedialog.asksaveasfile(mode='w', defaultextension=".csv")
     if f is None: # asksaveasfile return `None` if dialog closed with "cancel"
@@ -102,7 +106,8 @@ def export_data():
     f.write(export_str)
     f.close()
 
-    tt.unpause()
+    if not already_paused:
+        tt.unpause()
 
 
 def record_action(action, one_time_only = False):
@@ -110,8 +115,9 @@ def record_action(action, one_time_only = False):
     if tt.started:
         tt.record_action(action, one_time_only)
 
-    current_action = action
-    last_action_display.set(action)
+    if not one_time_only:
+        current_action = action
+        last_action_display.set(action)
 
 def init_clock():
     timer_display.set("00:00.00")
